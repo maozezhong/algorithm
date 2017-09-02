@@ -1,0 +1,28 @@
+package leetcode;
+
+public class max_consecutive_ons {
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int res = 0;
+        int res_temp = 0;
+        for(int i=0;i<nums.length;i++)
+        {
+        	if(nums[i]==1)
+        	{
+        		res_temp++;
+        	}
+        	else
+        	{
+        		res = Math.max(res, res_temp);
+        		res_temp = 0;
+        	}
+        }
+        res = Math.max(res, res_temp);
+        return res;
+    }
+    public static void main(String[] args){
+    	max_consecutive_ons t = new max_consecutive_ons();
+    	int[] nums = {1,1,0,1,1,1};
+    	int res  = t.findMaxConsecutiveOnes(nums);
+    	System.out.println(res);
+    }
+}

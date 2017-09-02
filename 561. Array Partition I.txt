@@ -1,0 +1,20 @@
+package leetcode;
+
+import java.util.Arrays;
+
+public class array_partition {
+	public int arrayPairSum(int[] nums) {
+        Arrays.sort(nums);
+        int res = 0;
+        for(int i=0;i<nums.length;i+=2){
+        	res += nums[i];
+        }
+        return res;
+    }
+	public static void main(String[] args){
+		array_partition a = new array_partition();
+		int[] nums = {1,4,3,2};
+		int res = a.arrayPairSum(nums);
+		System.out.println(res);
+	}
+}

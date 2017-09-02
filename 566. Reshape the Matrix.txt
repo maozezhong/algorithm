@@ -1,0 +1,41 @@
+package leetcode;
+
+public class reshape_matrix {
+	public int[][] matrixReshape(int[][] nums, int r, int c) {
+        int r_old = nums.length;
+        int c_old = nums[0].length;
+        int[][] res = new int[r][c];
+        if (r*c != r_old*c_old)
+        	return nums;
+        int index_i = 0;
+        int index_j = 0;
+        for (int i=0;i<r;i++)
+        {
+        	for (int j=0;j<c;j++)
+        	{
+        		if (index_j > c_old-1)
+        		{
+        			index_i ++;
+        			index_j = 0;
+        		}
+        		res[i][j] = nums[index_i][index_j];
+        		index_j++;
+        	}
+        }
+        return res;
+    }
+	public static void main(String[] args){
+		reshape_matrix m = new reshape_matrix();
+		int[][] origin = {{1,2},{3,4}};
+		int r = 4;
+		int c = 1;
+		int[][] res = m.matrixReshape(origin, r, c);
+		for(int i=0;i<r;i++){
+			for(int j=0;j<c;j++){
+				System.out.print(res[i][j]);
+				System.out.print(' ');
+			}
+			System.out.println();
+		}
+	}
+}
