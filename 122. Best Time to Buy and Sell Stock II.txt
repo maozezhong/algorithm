@@ -1,0 +1,36 @@
+class Solution {
+    public int maxProfit(int[] prices) {
+        int i,j;
+        int res=0;
+        i = find_i(0,prices);
+        while(i<prices.length)
+    	{
+        	j = i+1;
+        	while (j<prices.length-1)
+        	{
+        		if(prices[j]<prices[j+1])
+        			j++;
+        		else
+        			break;
+        	}
+        	if (j>=prices.length)
+        		break;
+        	if(prices[j]>prices[i])
+        		res += prices[j]-prices[i];
+        	i = find_i(j+1,prices);
+        }
+        return res;
+    }
+    public int find_i(int start, int[] p)
+    {
+    	int i = start;
+    	while(i<p.length-1)
+    	{
+    		if(p[i]>p[i+1])
+    			i++;
+    		else
+    			break;
+    	}
+    	return i;
+    }
+}
