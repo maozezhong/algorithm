@@ -1,0 +1,68 @@
+[121. Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/discuss/)
+#### 思路：
+
+```
+遍历，以当前为最小值，找当前位置之后的最大值
+测试不通过，超时
+```
+#### 代码：
+
+```
+class Solution {
+   public int maxProfit(int[] prices) {
+        int index;
+        int res = 0;
+        index = find_i(0,prices);
+        while(index<prices.length){
+        	res = Math.max(res, find_max(index,prices)-prices[index]);
+        	index = find_i(index+1, prices);
+        }
+        return res;
+    }
+    public int find_i(int start, int[] prices)
+    {
+    	int i = start;
+    	while(i<prices.length-1){
+    		if(prices[i+1]<prices[i])
+    			i++;
+    		else
+    			return i;
+    	}
+    	return start;
+    }
+    public int find_max(int start, int[] prices)
+    {
+    	int max = 0;
+    	for(int i=start+1;i<prices.length;i++)
+	    	max = Math.max(max, prices[i]);
+    	return max;
+    }
+}
+```
+
+#### 思路2（讨论）
+
+ ["max subarray problem" using Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem)
+######  关于最大子串和问题：
+http://blog.csdn.net/joylnwang/article/details/6859677
+
+```
+1. 分子串，使得除了最后一个串，其余的和都小于0
+2. 计算各个子串的最大前缀和，取最大值
+```
+
+
+#### 代码2：
+
+```
+   public int maxProfit(int[] prices) {
+        int maxCur = 0, maxSoFar = 0;
+        for(int i = 1; i < prices.length; i++) {
+            maxCur = Math.max(0, maxCur += prices[i] - prices[i-1]);
+            maxSoFar = Math.max(maxCur, maxSoFar);
+        }
+        return maxSoFar;
+    }
+```
+
+

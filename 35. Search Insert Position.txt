@@ -1,0 +1,23 @@
+[35. Search Insert Position](https://leetcode.com/problems/search-insert-position/description/)
+#### ДњТыЃК
+
+```
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int res=0;
+    	for(int i=0;i<nums.length;i++)
+        {
+    		if(nums[i]==target)
+    		{
+    			res = i;
+    			break;
+    		}
+        	if(nums[i]<target)
+        		res++;
+        	if(nums[i]>target)
+        		break;
+        }
+    	return Math.max(0, res);
+    }
+}
+```
