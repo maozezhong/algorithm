@@ -1,0 +1,33 @@
+class Solution {
+    public int[] plusOne(int[] digits) {
+        int jw = 1;
+    	for(int i=digits.length-1;i>=0;i--)
+        {
+        	int temp = 0;
+        	if(jw==1)
+        		temp = digits[i]+1;
+        	else
+        		break;
+        	if(temp>=10)
+        	{
+        		digits[i] = temp%10;
+        		jw = 1;
+        	}
+        	else
+        	{
+        		digits[i] = temp;
+        		jw = 0;
+        		break;
+        	}
+        }
+    	if ( jw ==1 )
+    	{
+    		int[] res = new int[digits.length+1];
+    		res[0] = 1;
+    		for(int i=1;i<digits.length+1;i++)
+    			res[i] = digits[i-1];
+    		return res;
+    	}
+    	return digits;
+    }
+}
