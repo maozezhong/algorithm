@@ -1,0 +1,49 @@
+/*
+using unordered_set
+*/
+class Solution {
+public:
+    int distributeCandies(vector<int>& candies) {
+        int res = 0;
+        if(candies.size()%2!=0)
+            return res;
+        unordered_set<int> table;
+        for(int i : candies)
+        {
+                table.insert(i);
+        }
+        auto it = table.begin();
+        int kinds = 0;
+        while(it!=table.end())
+        {
+            kinds++;
+            it++;
+        }
+        if(kinds>=candies.size()/2)
+            return candies.size()/2;
+        else
+            return kinds;
+    }
+};
+
+/*
+using bitset
+beats 94.9%
+*/
+class Solution {
+public:
+    int distributeCandies(vector<int>& candies) {
+        bitset<200001> hash;
+        int count = 0;
+        for(int i : candies)
+        {
+            if(!hash.test(i+100000))
+            {
+                count++;
+                hash.set(i+100000);
+            }
+        }
+        int n = candies.size()/2;
+        return min(n, count);
+    }
+};
