@@ -1,0 +1,60 @@
+/*
+math solution
+Link:https://leetcode.com/problems/preimage-size-of-factorial-zeroes-function/discuss/117631/C++-O(logn)-math-solution-with-explanation
+
+First the answer is either 0 or 5 without doubt.
+Let x = a0 * 5^0 + a1 * 5^1 + a2 * 5^2 + бн where a0, a1, a2 бн are less than 5 and greater or equal to 0.
+
+Then f(x) = x / 5 + x / 5^2 + x / 5^3 + бн
+= a1 * 1 + a2 * (1 + 5) + a3 * (1 + 5 + 5^2) + бн
+= a1 * sum[0] + a2 * sum[1] + a3 * sum[2] + бн as in the code above
+
+So if any one of the a above is not [0, 4] for a given number K, it violate the constraints so we should return 0.
+Otherwise return 5.
+*/
+
+class Solution {
+public:
+    int preimageSizeFZF(int K) {
+        int sums[13] = {1};
+        for(int i=1;i<=12;i++)
+            sums[i] = sums[i-1]*5+1;
+        for(int i=12;i>=0;i--)
+        {
+            if(K/sums[i]==5)
+                return 0;
+            K = K%sums[i];
+        }
+        return 5;
+    }
+};
+
+/*
+binary search
+*/
+class Solution {
+public:
+    int preimageSizeFZF(int K) {
+        return (int)(bianrySearch(K)-bianrySearch(K-1));
+    }
+    long bianrySearch(int K)
+    {
+        long l = 0, r = 5L * (K+1);
+        while(l<=r)
+        {
+            long mid = l + (r-l) / 2;
+            if(getZeros(mid)<=K)
+                l = mid+1;
+            else
+                r = mid-1;
+        }
+        return r;
+    }
+    long getZeros(long mid)
+    {
+        long zero_nums = 0;
+        for(;mid!=0;mid /= 5)
+            zero_nums += mid / 5;
+        return zero_nums;
+    }
+};
