@@ -1,0 +1,37 @@
+/*
+Link: https://leetcode.com/problems/largest-sum-of-averages/discuss/122775/Java-bottom-up-DP-with-Explanation
+Let f[i][j]be the largest sum of averages for first i + 1 numbers(A[0], A[1], ... , A[i]) tojgroups. f[i][j] consists of two parts: first j-1 groups’ averages and the last group’ s average. Considering the last group, its last number must be A[i] and its first number can be from A[0] to A[i]. Suppose the last group starts from A[p+1], we can easily get the average form A[p+1] to A[i]. The sum of first j-1 groups’ average is f[p][j-1] which we have got before. So now we can write the DP equation:
+f[i][j] = max {f[p][j-1] + (A[p+1] + A[p+2] + ... + A[i]) / (i - p)}, p = 0,1,...,i-1
+*/
+class Solution {
+public:
+    double largestSumOfAverages(vector<int>& A, int K) {
+        if(A.size()==0 || K>A.size())
+            return 0.0;
+        vector<vector<double>> dp(A.size(), vector<double>(K, 0.0)); //dp[i][j]表示A[0...i]分成j份的最大平均值之和
+        //第一行
+        dp[0][0] = (double)A[0];
+        //第一列
+        double cur_sum = A[0];
+        for(int i=1;i<A.size();i++)
+        {
+            cur_sum += A[i];
+            dp[i][0] = cur_sum / (i+1);
+        }
+        
+        for(int i=1;i<A.size();i++)
+        {
+            for(int j=1; j<K;j++)
+            {
+                cur_sum = 0;
+                for(int start=i;start>0;start--)
+                {
+                    cur_sum += A[start];
+                    dp[i][j] = max(dp[i][j], dp[start-1][j-1]+ cur_sum/(i-start+1));
+                }
+            }
+        }
+        
+        return dp[A.size()-1][K-1];
+    }
+};
