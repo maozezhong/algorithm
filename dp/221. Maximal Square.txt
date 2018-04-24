@@ -1,0 +1,76 @@
+class Solution {
+public:
+    /*
+        有坑，得考虑单行单列的情况
+    */
+    int maximalSquare_1(vector<vector<char>>& matrix) {
+        int row = matrix.size();
+        if(row==0)
+            return 0;
+        int col = matrix[0].size();
+        vector<vector<int>> dp(row, vector<int>(col, 0)); //dp[i][j]表示以坐标[i,j]为右下角的正方形的边长
+        int res = 0;
+        //第一行
+        for(int j=0;j<col;j++)
+        {
+            dp[0][j] = matrix[0][j]=='1' ? 1 : 0;
+            res = max(res, dp[0][j]);
+        }
+        //第一列
+        for(int i=0;i<row;i++)
+        {
+            dp[i][0] = matrix[i][0]=='1' ? 1 : 0;
+            res = max(res, dp[i][0]);
+        }    
+        
+        //i>0, j>0的情况
+        for(int i=1;i<row;i++)
+        {
+            for(int j=1;j<col;j++)
+            {
+                if(matrix[i][j]=='0')
+                    dp[i][j] = 0;
+                else 
+                    dp[i][j] = min(min(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1])+1;
+                res = max(res, dp[i][j]);
+            }
+        }
+        return res*res;
+    }
+    //优化版本O(N^2),O(N)
+    int maximalSquare(vector<vector<char>>& matrix)
+    {
+        int row = matrix.size();
+        if(row==0)
+            return 0;
+        int col = matrix[0].size();
+        vector<int> dp(col, 0);
+        int res = 0;
+        //第一行
+        for(int j=0; j<col;j++)
+        {
+            dp[j] = matrix[0][j]=='1' ? 1 : 0;
+            res = max(res, dp[j]);
+        }
+        
+        //依次下来的情况
+        for(int i=1;i<row;i++)
+        {
+            int pre = dp[0];
+            dp[0] = matrix[i][0]=='1' ? 1 : 0;
+            res = max(res, dp[0]);
+            for(int j=1;j<col;j++)
+            {
+                int temp = dp[j];
+                if(matrix[i][j]=='0')
+                    dp[j] = 0;
+                else{
+                    dp[j] = min(min(pre, temp), dp[j-1])+1;
+                    res = max(res, dp[j]);
+                }
+                pre = temp;
+            }
+        }
+        return res*res;
+    }
+};
