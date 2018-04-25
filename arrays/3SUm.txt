@@ -1,0 +1,52 @@
+/*
+思想:
+	排序后，定第一位i，然后j从i+1开始，k从最后一位开始，分情况往中间移动
+        1)nums[i]+nums[j]+nums[k]==0, k--, j++
+        2)nums[i]+nums[j]+nums[k]<0, j++
+        3)nums[i]+nums[j]+nums[k]>0, k--
+    tips:
+        1)i在每次循环还得考虑重复问题
+        2）内部的重复问题只需要在3sum为0的时候考虑就行
+*/
+class Solution {
+public:
+    static bool compare(int t1, int t2)
+    {
+        return t1<t2;
+    }
+    
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end(), compare);
+        vector<vector<int>> res;
+        if(nums.size()==0)
+            return res;
+        int i=0;
+        while(i<nums.size())
+        {
+            int j = i+1;
+            int k = nums.size()-1;
+            while(j<k)
+            {
+                if(nums[i]+nums[j]+nums[k]==0)
+                {
+                    res.push_back({nums[i], nums[j], nums[k]});
+                    while(j<k-1 && nums[k-1]==nums[k])
+                        k--;
+                    while(j+1<k && nums[j]==nums[j+1])
+                        j++;
+                    k--;
+                    j++;
+
+                }else if(nums[i]+nums[j]+nums[k]>0){
+                    k--;
+                }else{
+                    j++;
+                }
+            }
+            while(i+1<nums.size() && nums[i+1]==nums[i])
+			    i++;
+            i++;
+        }
+        return res;
+    }
+};
