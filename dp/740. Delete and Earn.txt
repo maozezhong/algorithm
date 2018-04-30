@@ -1,0 +1,55 @@
+class Solution {
+public:
+    /*
+    思想：
+        1）建立一个map，找数组中每个元素重复的个数
+        2）对数组从小到大排序
+        3）在不考虑数组值重复的情况下，若有连续的数字，则设pre表示不含当前位置的之前最大和，cur表示含当前位置的最大和，移动位置一直重复计算
+        4）考虑重复的情况下，就是把index移动到第一次出现该数的位置，当index-1>=0 &7 nums[index-1]==nums[index]时，index--
+    */
+    static bool compare(int n1, int n2)
+    {
+        return n1<n2;
+    }
+    int deleteAndEarn(vector<int>& nums) {
+        if(nums.size()==0)
+            return 0;
+        sort(nums.begin(), nums.end(), compare);
+        map<int, int> tables;
+        for(int i : nums)
+        {
+            if(tables.find(i)!=tables.end())
+                tables.find(i)->second++;
+            else
+                tables.insert(make_pair(i,1));
+        }
+        
+        int cur = 0, pre = 0;
+        int index = nums.size()-1;
+        int pre_num = nums[nums.size()-1]+1;
+        int res = 0;
+        while(index>=0)
+        {
+            while(index>=1 && nums[index]==nums[index-1])
+                index--;
+            if(index==nums.size()-1 || nums[index]+1==pre_num)
+            {
+                int temp = max(cur, pre+nums[index]*tables.find(nums[index])->second);
+                pre = cur;
+                cur = temp;
+                pre_num = nums[index];
+            }
+            else
+            {
+                res += cur;
+                pre_num = nums[index]+1;
+                cur = 0;
+                pre = 0;
+                continue;
+            }
+            index--;
+        }
+        res += cur;
+        return res;
+    }
+};
