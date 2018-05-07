@@ -1,0 +1,138 @@
+123. Best Time to Buy and Sell Stock III
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/description/
+class Solution {
+public:
+    /*
+    思路：
+        遍历数组，当前处于i位置的时候，分别求[0~i]买卖一次股票的最大收益和[i+1~end]买卖一次股票的最大收益，求和为i位置的时候的最大收益
+    复杂度：
+        时间：O(N^2)
+        空间：O(1)
+    爆炸：测试时间1000多ms
+    */
+    int maxProfit(vector<int>& prices) {
+        if(prices.size()==0)
+            return 0;
+        int res = 0;
+        for(int i=0;i<prices.size();i++)
+        {
+            int left = maxProfitOnce(prices, 0, i);
+            int right = maxProfitOnce(prices, i+1, prices.size()-1);
+            res = max(res, left+right);
+        }
+        return res;
+    }
+    
+    int maxProfitOnce(vector<int>& prices, int start, int end)
+    {
+        int max_ = prices[end];
+        int res = 0;
+        for(int i=end-1;i>=start;i--)
+        {
+            if(prices[i]<max_)
+                res = max(res, max_-prices[i]);
+            else
+                max_ = prices[i];
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    /*
+    思路：
+        dp解法，建立一个二维dp数组
+        dp[k][ii]表示最多k次交易，到prices[ii]为止（不包含prices[ii]）所能获得的最大收益
+        则dp[k][ii] = max(dp[k][ii-1], prices[ii]-prices[jj]+dp[k-1][jj])其中jj属于[0, ii-1]闭区间，推导可得
+        dp[k][ii] = max(dp[k][ii-1], prices[ii]+max(dp[k-1][jj]-prices[jj]))其中jj属于[0, ii-1]闭区间
+        dp[1][ii] = 0
+        dp[k][1] = 0
+    复杂度：
+        时间：O(k*N)
+        空间：O(k*N)
+    */
+    int maxProfit(vector<int>& prices) {
+        int res = 0;
+        if(prices.size()==0)
+            return 0;
+        else
+        {
+            int k = 2;
+            vector<vector<int>> dp(k+1, vector<int>(prices.size(), 0));
+            for(int kk=1;kk<=k;kk++)
+            {
+                int maxTemp = dp[kk-1][0] - prices[0];
+                for(int ii=1;ii<prices.size();ii++)
+                {
+                    dp[kk][ii] = max(dp[kk][ii-1], prices[ii]+maxTemp); //左
+                    res = max(res, dp[k][ii]);
+                    maxTemp = max(maxTemp, dp[kk-1][ii]-prices[ii]); //上
+                }
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    /*
+    思路：
+        优化一下dp解法，建立一个一维dp数组
+    复杂度：
+        时间：O(k*N)
+        空间：O(N)
+    */
+    int maxProfit(vector<int>& prices) {
+        int res = 0;
+        if(prices.size()==0)
+            return 0;
+        else
+        {
+            int k = 2;
+            vector<int> dp(prices.size(), 0);
+            for(int kk=1;kk<=k;kk++)
+            {
+                int maxTemp = dp[0] - prices[0];
+                for(int ii=1;ii<prices.size();ii++)
+                {
+                    int tempTop = dp[ii];
+                    dp[ii] = max(dp[ii-1], prices[ii]+maxTemp); //左
+                    res = max(res, dp[ii]);
+                    maxTemp = max(maxTemp, tempTop-prices[ii]); //上
+                }
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    /*
+    思路：
+        初始手上就0块钱,buy1表示我需要向别人借钱来买入这个股票prices[i]，所以我实际上是欠别人buy1块钱，我想让欠的钱约少越好，则需要最大化buy1,因为buy1是负的 -> buy1 = max(buy1, -prices[i]);
+        sell1表示我先在手上有buy1块钱，想以prices[i]卖掉我手上这支股票，卖掉后我剩下sell1块钱，当然也是越大越好，sell1 = max(sell1, buy1+prices[i]);
+        buy2表示我现在手上有sell1块钱，我想买入prices[i]，买入后我手上有buy2块钱，也希望buy2越大越好,buy2 = max(buy2, sell1+prices[i]);
+        sell2表示我现在手上有buy2块钱，想以prices[i]卖掉我手上这支股票，卖掉后我剩下sell2块钱，希望也是sell2越大越好
+    */
+    int maxProfit(vector<int>& prices) {
+        if(prices.size()==0)
+            return 0;
+        int buy1 = INT_MIN, sell1 = 0, buy2 = INT_MIN, sell2 = 0; 
+        //这么初始化的原因是：
+        //buy1设最小值则我刚开始必买入
+        //sell1设为0，那么如果卖出后是亏的我就相当于之前不买
+        //类似设置buy2和sell2
+        for(int i : prices)
+        {
+            buy1 = max(buy1, -i);
+            sell1 = max(sell1, buy1+i);
+            buy2 = max(buy2, sell1-i);
+            sell2 = max(sell2, buy2+i);
+        }
+        return sell2;
+    }
+};

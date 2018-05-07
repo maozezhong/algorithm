@@ -1,0 +1,22 @@
+class Solution {
+public:
+    /*
+    思路：
+        从右向左遍历，维护一个变量保存最大值
+        维护一个全局变量保存最大值
+    */
+    int maxProfit(vector<int>& prices) {
+        int res = 0;
+        if(prices.size()==0)
+            return res;
+        int max_ = prices[prices.size()-1];
+        for(int i=prices.size()-2;i>=0;i--)
+        {
+            if(prices[i]<max_)
+                res = max(res, max_-prices[i]);
+            else
+                max_ = prices[i];
+        }
+        return res;
+    }
+};
