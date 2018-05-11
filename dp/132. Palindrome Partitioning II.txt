@@ -1,0 +1,31 @@
+class Solution {
+public:
+    /*
+    思路：
+    dp问题
+    dp[i]表示i到len-1这个长度的字符串的最小回文分割数
+    dp[i] = min(dp[j+1]+1),i<=j<len,且要满足s[i...j]为回文
+    isPalindrom[i][j]表示s[i...j]是否为回文
+    isPalindrom[i][j] = s[i]==s[j] && (j-i<2 || isPalindrom[i+1][j-1])
+    */
+    int minCut(string s) {
+        if(s.length()==0)
+            return 0;
+        vector<int> dp(s.length()+1);
+        dp[s.length()] = -1;
+        vector<vector<bool>> isPalindrom(s.length(), vector<bool>(s.length(), false));
+        for(int i=s.length()-1;i>=0;i--)
+        {
+            dp[i] = INT_MAX;
+            for(int j=i;j<s.length();j++)
+            {
+                if(s[i]==s[j] && (j-i<2 || isPalindrom[i+1][j-1]))
+                {
+                    isPalindrom[i][j] = true;
+                    dp[i] = min(dp[i],dp[j+1]+1);
+                }
+            }
+        }
+        return dp[0];
+    }
+};
