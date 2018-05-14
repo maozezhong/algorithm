@@ -1,0 +1,60 @@
+class Solution {
+public:
+    /*
+    思路：BFS
+    */
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        vector<vector<string>> res;
+        unordered_set<string> wordlist(wordList.begin(), wordList.end());//做一个hashset存单词
+        unordered_set<string> visited; //存看过的单词，bfs的每一个leveli结束后在wordlist中删除看过的单词，避免重复访问
+        queue<vector<string>> q;
+        bool flag = false; //表示是否已经到endWord，如果到了的话就没必要继续广搜了
+        q.push({beginWord});
+        while(!q.empty())
+        {
+            int size = q.size();
+            for(int i=0;i<size;i++)
+            {
+                vector<string> cur = q.front();
+                q.pop();
+                vector<string> newadd = addword(cur.back(), wordlist);
+                for(int j=0;j<newadd.size();j++)
+                {
+                    vector<string> newLine(cur.begin(), cur.end());
+                    newLine.push_back(newadd[j]);
+                    if(newadd[j]==endWord)
+                    {
+                        flag = true;
+                        res.push_back(newLine);
+                    }
+                    visited.insert(newadd[j]);
+                    q.push(newLine);
+                }
+            }
+            if(flag)    //已经到endWord了，没有必要继续BFS了
+                break;
+            //一个level结束后删除看过的单词
+            for(auto it=visited.begin();it!=visited.end();it++)
+                wordlist.erase(*it);
+            visited.clear();
+        }
+        return res;
+    }
+    
+    vector<string> addword(string word, unordered_set<string>& wordlist)
+    {
+        vector<string> res;
+        for(int i=0;i<word.size();i++)
+        {
+            char tmp = word[i];
+            for(int j='a';j<='z';j++)
+            {
+                word[i] = j;
+                if(wordlist.count(word))
+                    res.push_back(word);
+                word[i] = tmp;
+            }
+        }
+        return res;
+    }
+};
