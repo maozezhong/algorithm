@@ -1,0 +1,34 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int maxNum;
+    int maxPathSum(TreeNode* root) {
+        maxNum = INT_MIN;
+        maxSum(root);
+        return maxNum;
+    }
+    /*
+    思路：
+    1）求左子树单路径最大和
+    2）求右子树单路径最大和
+    3）求经过当前根节点的单路径最大和
+    4）遍历所有节点，按照上述方式求最大和
+    */
+    int maxSum(TreeNode* root)
+    {
+        if(!root)
+            return 0;
+        int l_max = max(0, maxSum(root->left));
+        int r_max = max(0, maxSum(root->right));
+        maxNum = max(maxNum, l_max+r_max+root->val);
+        return max(l_max,r_max)+root->val;
+    }
+};
