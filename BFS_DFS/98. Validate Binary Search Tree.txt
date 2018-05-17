@@ -1,0 +1,52 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    /*
+    中序遍历
+    注意两个地方：
+        1）45行，不满足条件之间返回false是不行的，因为morris是把树的结构破坏了，后台还要销毁树，但是直接返回树就不是原来的结构，所以会报错run time error
+        2）pre出事为INT_MIN的话可能输入就是INT_MIN，所以用(long)INT_MIN-1
+    */
+    bool isValidBST(TreeNode* root) {
+        if(!root)
+            return true;
+        long pre = (long)INT_MIN-1;
+        TreeNode* cur = root;
+        TreeNode* left = NULL;
+        bool res = true;
+        while(cur)
+        {
+            left = cur->left;
+            if(left)
+            {
+                //找到left的最右节点
+                while(left->right && left->right!=cur)
+                    left = left->right;
+                if(left->right==NULL)
+                {
+                    left->right = cur;
+                    cur = cur->left;
+                    continue;
+                }
+                else //left->right==cur
+                {
+                    left->right = NULL;
+                }
+            }
+            if(cur->val<=pre)
+                res = false;
+            else
+                pre = cur->val;
+            cur = cur->right;
+        }
+        return res;
+    }
+};
