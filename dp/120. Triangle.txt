@@ -1,0 +1,68 @@
+class Solution {
+public:
+    /*
+    思路1：
+        深搜回溯，leetcode超时，牛客过
+    思路2：
+        自底部向上
+    思路3：
+        常规dp，从上到下
+    */
+    int minimumTotal(vector<vector<int>>& triangle) {
+        if(triangle.size()<=0)
+            return 0;
+        vector<vector<int>> dp(triangle.size());
+        for(int i=0;i<triangle.size();i++)
+            dp[i] = vector<int>(triangle[i].size(), INT_MAX);
+        
+        dp[0][0] = triangle[0][0];
+        
+        for(int i=0;i<triangle.size()-1;i++)
+        {
+            for(int j=0;j<triangle[i].size();j++)
+            {
+                dp[i+1][j] = min(dp[i+1][j], dp[i][j]+triangle[i+1][j]);
+                dp[i+1][j+1] = min(dp[i+1][j+1], dp[i][j]+triangle[i+1][j+1]);
+            }
+        }
+        int res = INT_MAX;
+        for(int i : dp[triangle.size()-1])
+            res = min(res, i);
+        return res;
+    }
+    int minimumTotal2(vector<vector<int>>& triangle) {
+        if(triangle.size()<=0)
+            return 0;
+        vector<int> dp = triangle[triangle.size()-1]; //设为最后一行
+        for(int i=triangle.size()-2;i>=0;i--) //往上走
+        {
+            for(int j=0;j<triangle[i].size();j++) //从左往右
+            {
+                dp[j] = triangle[i][j] + min(dp[j], dp[j+1]); //j位置替换为t[i][j]位置左右中累加和最小的位置
+            }
+        }
+        return dp[0];
+    }
+    int minimumTotal1(vector<vector<int>>& triangle) {
+        int row = triangle.size();
+        if(row<=0)
+            return 0;
+        int res = INT_MAX;
+        int curSum = 0;
+        DFS(triangle, 0, 0, row, curSum, res);
+        return res;
+    }
+    
+    void DFS(vector<vector<int>>& triangle, int i, int j, int row, int& curSum, int& res)
+    {
+        if(i>=row || j>=triangle[i].size())
+        {
+            res = min(res, curSum);
+            return;
+        }
+        curSum += triangle[i][j];
+        DFS(triangle, i+1, j, row, curSum, res);
+        DFS(triangle, i+1, j+1, row, curSum, res);
+        curSum -= triangle[i][j];
+    }
+};
